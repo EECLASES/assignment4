@@ -74,6 +74,11 @@ public abstract class Critter {
 	 * @throws InvalidCritterException
 	 */
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
+//		//Miguel is testing this out
+//		if (critter_class_name.equals("hello")) {
+//			System.out.println("good");
+//		}
+		
 	}
 
 	
