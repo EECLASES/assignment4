@@ -71,12 +71,29 @@ public class Main {
         /* Write your code below. */
         
         for(int i=0;i<100;i++) {
+        	Critter.addCritter("Craig");
+        }
+        for(int i=0;i<25;i++) {
         	Critter.addCritter("Algae");
         }
+       
+        String command = kb.next();
         
-        Critter.displayWorld();
-        //System.out.println(myPackage);
-        
+        while(!command.equals("quit")) {
+        	
+        	if(command.equals("show")) {
+        		Critter.displayWorld();
+        		command = kb.next();
+        		continue;
+        	}
+        	
+        	if(command.equals("step")) {
+        		Critter.worldTimeStep();       		        		        		
+        		command = kb.next();
+        		continue;
+        	}
+        	
+        }
         /* Write your code above */
         System.out.flush();
 

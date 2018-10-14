@@ -13,6 +13,7 @@ package assignment4;
  */
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /* see the PDF for descriptions of the methods and fields in this class
@@ -47,10 +48,84 @@ public abstract class Critter {
 	private int energy = 0;
 	protected int getEnergy() { return energy; }
 	
-	private int x_coord;
-	private int y_coord;
+	//private int x_coord;
+	//private int y_coord;
+	public int x_coord;
+	public int y_coord;
 	
 	protected final void walk(int direction) {
+		
+		energy -= Params.walk_energy_cost;
+		
+		switch(direction) {
+		case 0:
+			x_coord += 1;
+			if(x_coord == Params.world_width) {
+				x_coord = 0;
+			}
+			break;
+		case 1:
+			x_coord += 1;
+			y_coord -= 1;
+			if(x_coord == Params.world_width) {
+				x_coord = 0;
+			}
+			if(y_coord == -1) {
+				y_coord = Params.world_height;
+			}
+			break;
+		case 2:
+			y_coord -= 1;
+			if(y_coord == -1) {
+				y_coord = Params.world_height;
+			}
+			break;
+		case 3:
+			x_coord -= 1;
+			y_coord -= 1;
+			if(x_coord == -1) {
+				x_coord = Params.world_width;
+			}
+			if(y_coord == -1) {
+				y_coord = Params.world_height;
+			}
+			break;
+		case 4:
+			x_coord -= 1;
+			if(x_coord == -1) {
+				x_coord = Params.world_width;
+			}
+			break;
+		case 5:
+			x_coord -= 1;
+			y_coord += 1;
+			if(x_coord == -1) {
+				x_coord = Params.world_width;
+			}
+			if(y_coord == Params.world_height) {
+				y_coord = 0;
+			}
+			break;
+		case 6: 
+			y_coord += 1;
+			if(y_coord == Params.world_height) {
+				y_coord = 0;
+			}
+			break;
+		case 7:
+			x_coord += 1;
+			y_coord += 1;
+			if(x_coord == Params.world_width) {
+				x_coord = 0;
+			}
+			if(y_coord == Params.world_height) {
+				y_coord = 0;
+			}
+			break;
+		default:
+			//invalid direction
+			System.out.println("invalid direction, must be 0-7");
+		}
 	}
 	
 	protected final void run(int direction) {
@@ -170,10 +245,51 @@ public abstract class Critter {
 	 */
 	public static void clearWorld() {
 		// Complete this method.
+		
+		CritterWorld.population.clear();
+		
 	}
 	
 	public static void worldTimeStep() {
 		// Complete this method.
+		
+		for(Critter c : CritterWorld.population) {
+			c.doTimeStep();
+		}
+		
+		//doEncounters()
+		
+		updateRestEnergy();
+		
+		//generateAlgae()
+		
+		updatePopulation();
+		
+	}
+	
+	protected static void updatePopulation() {
+		
+		ArrayList<Critter> dead = new ArrayList<Critter>();
+		
+		for(int i=0;i<CritterWorld.population.size();i++) {
+			
+			if(CritterWorld.population.get(i).getEnergy() <= 0) {
+				dead.add(CritterWorld.population.get(i));
+			}
+			
+		}
+		
+		CritterWorld.population.removeAll(dead);
+		
+	}
+	
+	protected static void updateRestEnergy() {
+		
+		for(Critter c : CritterWorld.population) {
+			
+			int new_energy = c.getEnergy() - Params.rest_energy_cost;
+			c.setEnergy(new_energy);
+		}
 	}
 	
 	public static void displayWorld() {
@@ -211,9 +327,10 @@ public abstract class Critter {
 					//print critter if it exists at (x,y), ie (i+1,j+1) (due to borders)
 					boolean occupied = false;
 					for(Critter crit : CritterWorld.population) {
-						if(crit.x_coord == i+1 & crit.y_coord == j+1) {
-							System.out.println(crit.toString());
+						if(crit.x_coord == j-1 & crit.y_coord == i-1) {
+							System.out.print(crit.toString());
 							occupied = true;
+							break;
 						}
 					}
 					if(occupied == false) {
@@ -226,15 +343,31 @@ public abstract class Critter {
 			
 		}
 	}
+	
+	//protected method to set position of critter in makeCritter(final) method and addCritter(testing) method
+	protected void initializePosition(int x, int y) {
+		x_coord = x;
+		y_coord = y;
+	}
+	
+	//protected method to set energy of critter in final and testing creation methods^^
+	protected void setEnergy(int e) {
+		energy = e;
+	}
 
+	//test mode only method to add critters to population and initialize them
 	public static void addCritter(String critter_name) {
 		// TODO Auto-generated method stub
 		if(critter_name.equals("Craig")) {
 			Craig c1 = new Craig();
 			CritterWorld.population.add(c1);
+			c1.initializePosition(getRandomInt(Params.world_width-1), getRandomInt(Params.world_height-1));
+			c1.setEnergy(Params.start_energy);
 		} else if(critter_name.equals("Algae")) {
 			Algae a1 = new Algae();
 			CritterWorld.population.add(a1);
+			a1.initializePosition(getRandomInt(Params.world_width-1), getRandomInt(Params.world_height-1));
+			a1.setEnergy(Params.start_energy);
 		}
 		
 		
