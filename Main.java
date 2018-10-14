@@ -77,19 +77,19 @@ public class Main {
         	Critter.addCritter("Algae");
         }
        
-        String command = kb.next();
+        String command = kb.nextLine();
         
         while(!command.equals("quit")) {
         	
         	if(command.equals("show")) {
         		Critter.displayWorld();
-        		command = kb.next();
+        		command = kb.nextLine();
         		continue;
         	}
         	
         	if(command.equals("step")) {
         		Critter.worldTimeStep();       		        		        		
-        		command = kb.next();
+        		command = kb.nextLine();
         		continue;
         	}
         	
