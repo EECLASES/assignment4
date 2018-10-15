@@ -24,8 +24,8 @@ import java.util.List;
 
 public abstract class Critter {
 	private static String myPackage;
-	private	static List<Critter> population = new java.util.ArrayList<Critter>();
-	private static List<Critter> babies = new java.util.ArrayList<Critter>();
+	//private	static List<Critter> population = new java.util.ArrayList<Critter>();
+	//private static List<Critter> babies = new java.util.ArrayList<Critter>();
 
 	// Gets the package name.  This assumes that Critter and its subclasses are all in the same package.
 	static {
@@ -54,71 +54,91 @@ public abstract class Critter {
 	public int y_coord;
 	
 	protected final void walk(int direction) {
+		move(false,direction);
+	}
+	
+	//stage 2: reuse walk code
+	protected final void run(int direction) {
+		move(true,direction);
+	}
+	
+	//helper method for walk/run methods
+	protected final void move(boolean type, int direction) {
 		
-		energy -= Params.walk_energy_cost;
+		int magnitude = 1;
+		if(type) {
+			magnitude = 2;
+		}
+		
+		if(type) {
+			energy -= Params.run_energy_cost;
+		} else {
+			energy -= Params.walk_energy_cost;
+		}
+		
 		
 		switch(direction) {
 		case 0:
-			x_coord += 1;
-			if(x_coord == Params.world_width) {
+			x_coord += magnitude;
+			if(x_coord >= Params.world_width) {
 				x_coord = 0;
 			}
 			break;
 		case 1:
-			x_coord += 1;
-			y_coord -= 1;
-			if(x_coord == Params.world_width) {
+			x_coord += magnitude;
+			y_coord -= magnitude;
+			if(x_coord >= Params.world_width) {
 				x_coord = 0;
 			}
-			if(y_coord == -1) {
+			if(y_coord <= -1) {
 				y_coord = Params.world_height;
 			}
 			break;
 		case 2:
-			y_coord -= 1;
-			if(y_coord == -1) {
+			y_coord -= magnitude;
+			if(y_coord <= -1) {
 				y_coord = Params.world_height;
 			}
 			break;
 		case 3:
-			x_coord -= 1;
-			y_coord -= 1;
-			if(x_coord == -1) {
+			x_coord -= magnitude;
+			y_coord -= magnitude;
+			if(x_coord <= -1) {
 				x_coord = Params.world_width;
 			}
-			if(y_coord == -1) {
+			if(y_coord <= -1) {
 				y_coord = Params.world_height;
 			}
 			break;
 		case 4:
-			x_coord -= 1;
-			if(x_coord == -1) {
+			x_coord -= magnitude;
+			if(x_coord <= -1) {
 				x_coord = Params.world_width;
 			}
 			break;
 		case 5:
-			x_coord -= 1;
-			y_coord += 1;
-			if(x_coord == -1) {
+			x_coord -= magnitude;
+			y_coord += magnitude;
+			if(x_coord <= -1) {
 				x_coord = Params.world_width;
 			}
-			if(y_coord == Params.world_height) {
+			if(y_coord >= Params.world_height) {
 				y_coord = 0;
 			}
 			break;
 		case 6: 
-			y_coord += 1;
-			if(y_coord == Params.world_height) {
+			y_coord += magnitude;
+			if(y_coord >= Params.world_height) {
 				y_coord = 0;
 			}
 			break;
 		case 7:
-			x_coord += 1;
-			y_coord += 1;
-			if(x_coord == Params.world_width) {
+			x_coord += magnitude;
+			y_coord += magnitude;
+			if(x_coord >= Params.world_width) {
 				x_coord = 0;
 			}
-			if(y_coord == Params.world_height) {
+			if(y_coord >= Params.world_height) {
 				y_coord = 0;
 			}
 			break;
@@ -128,10 +148,7 @@ public abstract class Critter {
 		}
 	}
 	
-	protected final void run(int direction) {
-		
-	}
-	
+	//stage 2: look at project description
 	protected final void reproduce(Critter offspring, int direction) {
 	}
 
@@ -148,7 +165,7 @@ public abstract class Critter {
 	 * @param critter_class_name
 	 * @throws InvalidCritterException
 	 */
-	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
+	public static void makeCritter(String critter_class_name) throws InvalidCritterException {		
 	}
 
 	
@@ -226,7 +243,7 @@ public abstract class Critter {
 		 * implemented for grading tests to work.
 		 */
 		protected static List<Critter> getPopulation() {
-			return population;
+			return CritterWorld.population;
 		}
 		
 		/*
@@ -236,7 +253,7 @@ public abstract class Critter {
 		 * at either the beginning OR the end of every timestep.
 		 */
 		protected static List<Critter> getBabies() {
-			return babies;
+			return CritterWorld.babies;
 		}
 	}
 
@@ -253,6 +270,8 @@ public abstract class Critter {
 	public static void worldTimeStep() {
 		// Complete this method.
 		
+		//System.out.println("doing worldtimestep");
+		
 		for(Critter c : CritterWorld.population) {
 			c.doTimeStep();
 		}
@@ -265,6 +284,13 @@ public abstract class Critter {
 		
 		updatePopulation();
 		
+	}
+	
+	//write for stage2
+	protected static void doEncounters() {
+		//check for all critters in the same location.
+		//for every spot with more than one critter, call both of their fight methods.
+		//if both are still alive, look at project description for what to do.
 	}
 	
 	protected static void updatePopulation() {
@@ -366,7 +392,10 @@ public abstract class Critter {
 		} else if(critter_name.equals("Algae")) {
 			Algae a1 = new Algae();
 			CritterWorld.population.add(a1);
-			a1.initializePosition(getRandomInt(Params.world_width-1), getRandomInt(Params.world_height-1));
+
+			//testing algae's testcritter methods
+			a1.setX_coord(getRandomInt(Params.world_width-1));
+			a1.setY_coord(getRandomInt(Params.world_height-1));
 			a1.setEnergy(Params.start_energy);
 		}
 		

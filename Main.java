@@ -69,17 +69,20 @@ public class Main {
 
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
-        
+   
         for(int i=0;i<100;i++) {
         	Critter.addCritter("Craig");
         }
         for(int i=0;i<25;i++) {
         	Critter.addCritter("Algae");
         }
+
        
         String command = kb.nextLine();
         
         while(!command.equals("quit")) {
+        	
+        	String[] command_components = command.split(" ");
         	
         	if(command.equals("show")) {
         		Critter.displayWorld();
@@ -87,10 +90,48 @@ public class Main {
         		continue;
         	}
         	
-        	if(command.equals("step")) {
-        		Critter.worldTimeStep();       		        		        		
+        	if(command_components[0].equals("step")) {
+        		int times = 1;
+        		if(command_components.length > 2) {
+        			//invalid command
+        			System.out.println("error processing: " + command);
+        			times = 0;
+        		}
+        		if(command_components.length == 2) {
+        			try {
+        			times = Integer.parseInt(command_components[1]);
+        			} catch (NumberFormatException e) {
+        				System.out.println("error processing: " + command);
+        				times = 0;
+        			}
+        		}
+        		for(int i=0;i<times;i++) {
+        			Critter.worldTimeStep();
+        		}       		        		        		
         		command = kb.nextLine();
         		continue;
+        	}
+        	
+        	if(command_components[0].equals("seed")) {
+        		boolean valid = true;
+        		int seed = 0;
+        		if(command_components.length > 2 || command_components.length == 1) {
+        			System.out.println("error processing: " + command);
+        			valid = false;
+        		}
+        		if(command_components.length == 2) {
+        			try {
+            			seed = Integer.parseInt(command_components[1]);
+            			} catch (NumberFormatException e) {
+            				System.out.println("error processing: " + command);
+            				valid = false;
+            			}
+        		}
+        		if(valid) {
+        			Critter.setSeed(seed);
+        		}
+        		command = kb.nextLine();
+        		
         	}
         	
         }
