@@ -150,7 +150,8 @@ public abstract class Critter {
 	
 	//stage 2: look at project description
 	protected final void reproduce(Critter offspring, int direction) {
-		
+		offspring.initializePosition(getX(), getY());
+		offspring.walk(direction);
 		
 	}
 
@@ -167,16 +168,11 @@ public abstract class Critter {
 	 * @param critter_class_name
 	 * @throws InvalidCritterException
 	 */
-<<<<<<< HEAD
-	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
-//		//Miguel is testing this out
-//		if (critter_class_name.equals("hello")) {
-//			System.out.println("good");
-//		}
+
 		
-=======
+
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {		
->>>>>>> 273d52a518f5c93b2a2f25b42043d8bb1098f4ea
+
 	}
 
 	
@@ -385,6 +381,12 @@ public abstract class Critter {
 	protected void initializePosition(int x, int y) {
 		x_coord = x;
 		y_coord = y;
+	}
+	protected int getX() {
+		return this.x_coord;
+	}
+	protected int getY() {
+		return this.y_coord;
 	}
 	
 	//protected method to set energy of critter in final and testing creation methods^^
