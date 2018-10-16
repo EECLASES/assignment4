@@ -150,9 +150,18 @@ public abstract class Critter {
 	
 	//stage 2: look at project description
 	protected final void reproduce(Critter offspring, int direction) {
+		if (this.getEnergy() > Params.min_reproduce_energy) {
+		CritterWorld.babies.add(offspring);
 		offspring.initializePosition(getX(), getY());
 		offspring.walk(direction);
 		
+		}
+		else {
+		return;
+		}
+		
+		offspring.setEnergy(this.getEnergy()/2);
+		this.setEnergy(Math.round(this.getEnergy()/2));
 	}
 
 	public abstract void doTimeStep();
@@ -313,6 +322,8 @@ public abstract class Critter {
 		}
 		
 		CritterWorld.population.removeAll(dead);
+		CritterWorld.population.addAll(CritterWorld.babies);
+		CritterWorld.babies.clear();
 		
 	}
 	
