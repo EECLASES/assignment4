@@ -91,36 +91,36 @@ public abstract class Critter {
 				x_coord = 0;
 			}
 			if(y_coord <= -1) {
-				y_coord = Params.world_height;
+				y_coord = Params.world_height-1;
 			}
 			break;
 		case 2:
 			y_coord -= magnitude;
 			if(y_coord <= -1) {
-				y_coord = Params.world_height;
+				y_coord = Params.world_height-1;
 			}
 			break;
 		case 3:
 			x_coord -= magnitude;
 			y_coord -= magnitude;
 			if(x_coord <= -1) {
-				x_coord = Params.world_width;
+				x_coord = Params.world_width-1;
 			}
 			if(y_coord <= -1) {
-				y_coord = Params.world_height;
+				y_coord = Params.world_height-1;
 			}
 			break;
 		case 4:
 			x_coord -= magnitude;
 			if(x_coord <= -1) {
-				x_coord = Params.world_width;
+				x_coord = Params.world_width-1;
 			}
 			break;
 		case 5:
 			x_coord -= magnitude;
 			y_coord += magnitude;
 			if(x_coord <= -1) {
-				x_coord = Params.world_width;
+				x_coord = Params.world_width-1;
 			}
 			if(y_coord >= Params.world_height) {
 				y_coord = 0;
@@ -150,6 +150,8 @@ public abstract class Critter {
 	
 	//stage 2: look at project description
 	protected final void reproduce(Critter offspring, int direction) {
+		
+		
 	}
 
 	public abstract void doTimeStep();
@@ -387,7 +389,8 @@ public abstract class Critter {
 		if(critter_name.equals("Craig")) {
 			Craig c1 = new Craig();
 			CritterWorld.population.add(c1);
-			c1.initializePosition(getRandomInt(Params.world_width-1), getRandomInt(Params.world_height-1));
+			//c1.initializePosition(getRandomInt(Params.world_width-1), getRandomInt(Params.world_height-1));
+			c1.initializePosition(0, 0);
 			c1.setEnergy(Params.start_energy);
 		} else if(critter_name.equals("Algae")) {
 			Algae a1 = new Algae();
