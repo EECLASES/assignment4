@@ -88,7 +88,7 @@ public class Main {
         		Critter.displayWorld();
         		command = kb.nextLine();
         		continue;
-        	}
+        	} else
         	
         	if(command_components[0].equals("step")) {
         		int times = 1;
@@ -110,7 +110,7 @@ public class Main {
         		}       		        		        		
         		command = kb.nextLine();
         		continue;
-        	}
+        	} else
         	
         	if(command_components[0].equals("seed")) {
         		boolean valid = true;
@@ -131,7 +131,12 @@ public class Main {
         			Critter.setSeed(seed);
         		}
         		command = kb.nextLine();
+        		continue;
         		
+        	} else {
+        		System.out.println("error processing: " + command);
+        		command = kb.nextLine();
+        		continue;
         	}
         	
         }

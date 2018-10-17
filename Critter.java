@@ -14,6 +14,7 @@ package assignment4;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /* see the PDF for descriptions of the methods and fields in this class
@@ -292,14 +293,25 @@ public abstract class Critter {
 			c.doTimeStep();
 		}
 		
-		//doEncounters()
+		doEncounters();
 		
 		updateRestEnergy();
 		
-		//generateAlgae()
+		//generateAlgae();
 		
 		updatePopulation();
 		
+	}
+	
+	protected static void generateAlgae() {
+		
+		for(int i=0;i<Params.refresh_algae_count;i++) {
+			Algae a = new Algae();
+			a.setEnergy(Params.start_energy);
+			a.setX_coord(getRandomInt(Params.world_width-1));
+			a.setY_coord(getRandomInt(Params.world_height-1));
+			CritterWorld.population.add(a);
+		}
 	}
 	
 	//write for stage2
@@ -307,6 +319,39 @@ public abstract class Critter {
 		//check for all critters in the same location.
 		//for every spot with more than one critter, call both of their fight methods.
 		//if both are still alive, look at project description for what to do.
+		
+		//find all critters that share a spot
+		HashMap<Critter,ArrayList<Critter>> same = new HashMap<Critter,ArrayList<Critter>>();
+		
+		for(Critter A : CritterWorld.population) {
+			
+			same.put(A, new ArrayList<Critter>());
+			
+			
+			for(Critter B : CritterWorld.population) {
+				
+				if(A == B) {
+					continue;
+				}
+				
+				if(A.getX() == B.getX() && A.getY() == B.getY()) {
+					
+					if(same.get(A).contains(B)) {
+						break;
+					} else if(same.get(B) != null) {
+							
+						if(same.get(B).contains(A)) {
+							break;
+						}
+					}		
+					same.get(A).add(B);
+					
+				}
+			}
+		}
+		
+		//for every encounter in "same", resolve in pairwise manner
+		
 	}
 	
 	protected static void updatePopulation() {
@@ -411,8 +456,8 @@ public abstract class Critter {
 		if(critter_name.equals("Craig")) {
 			Craig c1 = new Craig();
 			CritterWorld.population.add(c1);
-			//c1.initializePosition(getRandomInt(Params.world_width-1), getRandomInt(Params.world_height-1));
-			c1.initializePosition(0, 0);
+			c1.initializePosition(getRandomInt(Params.world_width-1), getRandomInt(Params.world_height-1));
+			//c1.initializePosition(0, 0);
 			c1.setEnergy(Params.start_energy);
 		} else if(critter_name.equals("Algae")) {
 			Algae a1 = new Algae();
