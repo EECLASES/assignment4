@@ -351,7 +351,52 @@ public abstract class Critter {
 		}
 		
 		//for every encounter in "same", resolve in pairwise manner
+		//stage 2: assuming only 2 critters in same spot
 		
+		for(Critter c : CritterWorld.population) {
+			if(same.get(c).size() == 1) {
+				doFight(c,same.get(c).get(0));
+			}
+		}
+		
+	}
+	
+	protected static void doFight(Critter a, Critter b) {
+		
+		boolean a_status = a.fight(b.toString());
+		boolean b_status = b.fight(a.toString());
+		int a_roll = 0;
+		int b_roll = 0;
+		
+		if(a_status == true && b_status == false) {
+			// a wins
+			if(a.getX() != b.getX() || a.getY() != b.getY()) {
+				return;
+			}
+			
+			a_roll = 10;
+
+		} else if(a_status == false && b_status == true) {
+			// b wins
+			if(a.getX() != b.getX() || a.getY() != b.getY()) {
+				return;
+			}
+			
+			b_roll = 10;
+			
+		} else if(a_status == true && b_status == true) {
+			// dice roll
+			a_roll = getRandomInt(a.getEnergy());
+			b_roll = getRandomInt(b.getEnergy());
+		}
+		
+		if(a_roll >= b_roll) {
+			a.setEnergy(a.getEnergy() + b.getEnergy()/2);
+			b.setEnergy(0);
+		} else {
+			b.setEnergy(b.getEnergy() + a.getEnergy()/2);
+			a.setEnergy(0);
+		}
 	}
 	
 	protected static void updatePopulation() {
