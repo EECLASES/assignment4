@@ -70,12 +70,12 @@ public class Main {
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
    
-        for(int i=0;i<1;i++) {
+        for(int i=0;i<100;i++) {
         	Critter.addCritter("Craig");
         }
-//        for(int i=0;i<25;i++) {
-//        	Critter.addCritter("Algae");
-//        }
+        for(int i=0;i<25;i++) {
+        	Critter.addCritter("Algae");
+        }
 
        
         String command = kb.nextLine();
@@ -84,7 +84,12 @@ public class Main {
         	
         	String[] command_components = command.split(" ");
         	
-        	if(command.equals("show")) {
+        	if(command_components[0].equals("show")) {
+        		if(command_components.length > 1) {
+        			System.out.println("error processing: " + command);
+        			command = kb.nextLine();
+        			continue;
+        		}
         		Critter.displayWorld();
         		command = kb.nextLine();
         		continue;
@@ -134,6 +139,7 @@ public class Main {
         		continue;
         		
         	} else {
+        		//not a valid command
         		System.out.println("error processing: " + command);
         		command = kb.nextLine();
         		continue;

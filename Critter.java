@@ -25,6 +25,8 @@ import java.util.List;
 
 public abstract class Critter {
 	private static String myPackage;
+	private boolean hasMoved = false;
+	private boolean inFight = false;
 	//private	static List<Critter> population = new java.util.ArrayList<Critter>();
 	//private static List<Critter> babies = new java.util.ArrayList<Critter>();
 
@@ -55,12 +57,36 @@ public abstract class Critter {
 	public int y_coord;
 	
 	protected final void walk(int direction) {
-		move(false,direction);
+		if(!hasMoved) {
+			move(false,direction);
+			hasMoved = true;
+		}
+		energy -= Params.walk_energy_cost;
+		
+		if(inFight) {
+			for(Critter c : CritterWorld.population) {
+				if(x_coord == c.x_coord && y_coord == c.y_coord) {
+					move(false,(direction+4)%8);
+				}
+			}
+		}
 	}
 	
 	//stage 2: reuse walk code
 	protected final void run(int direction) {
-		move(true,direction);
+		if(!hasMoved) {
+			move(true,direction);
+			hasMoved = true;
+		}
+		energy -= Params.run_energy_cost;
+		
+		if(inFight) {
+			for(Critter c : CritterWorld.population) {
+				if(x_coord == c.x_coord && y_coord == c.y_coord) {
+					move(true,(direction+4)%8);
+				}
+			}
+		}
 	}
 	
 	//helper method for walk/run methods
@@ -69,12 +95,6 @@ public abstract class Critter {
 		int magnitude = 1;
 		if(type) {
 			magnitude = 2;
-		}
-		
-		if(type) {
-			energy -= Params.run_energy_cost;
-		} else {
-			energy -= Params.walk_energy_cost;
 		}
 		
 		
@@ -147,6 +167,8 @@ public abstract class Critter {
 			//invalid direction
 			System.out.println("invalid direction, must be 0-7");
 		}
+		
+		
 	}
 	
 	//stage 2: look at project description
@@ -297,7 +319,7 @@ public abstract class Critter {
 		
 		updateRestEnergy();
 		
-		//generateAlgae();
+		generateAlgae();
 		
 		updatePopulation();
 		
@@ -354,14 +376,29 @@ public abstract class Critter {
 		//stage 2: assuming only 2 critters in same spot
 		
 		for(Critter c : CritterWorld.population) {
-			if(same.get(c).size() == 1) {
-				doFight(c,same.get(c).get(0));
+			
+			int n = same.get(c).size();
+			
+			if(n == 0) {
+				continue;
 			}
+			Critter current_winner = same.get(c).get(0);
+			
+			for(int i=1;i<n;i++) {
+				current_winner = doFight(current_winner,same.get(c).get(i));
+			}
+			doFight(c,current_winner);
+//			if(same.get(c).size() == 1) {
+//				doFight(c,same.get(c).get(0));
+//			}
 		}
 		
 	}
 	
-	protected static void doFight(Critter a, Critter b) {
+	protected static Critter doFight(Critter a, Critter b) {
+		
+		a.inFight = true;
+		b.inFight = true;
 		
 		boolean a_status = a.fight(b.toString());
 		boolean b_status = b.fight(a.toString());
@@ -371,7 +408,7 @@ public abstract class Critter {
 		if(a_status == true && b_status == false) {
 			// a wins
 			if(a.getX() != b.getX() || a.getY() != b.getY()) {
-				return;
+				return a;
 			}
 			
 			a_roll = 10;
@@ -379,7 +416,7 @@ public abstract class Critter {
 		} else if(a_status == false && b_status == true) {
 			// b wins
 			if(a.getX() != b.getX() || a.getY() != b.getY()) {
-				return;
+				return b;
 			}
 			
 			b_roll = 10;
@@ -393,9 +430,11 @@ public abstract class Critter {
 		if(a_roll >= b_roll) {
 			a.setEnergy(a.getEnergy() + b.getEnergy()/2);
 			b.setEnergy(0);
+			return a;
 		} else {
 			b.setEnergy(b.getEnergy() + a.getEnergy()/2);
 			a.setEnergy(0);
+			return b;
 		}
 	}
 	
@@ -414,6 +453,11 @@ public abstract class Critter {
 		CritterWorld.population.removeAll(dead);
 		CritterWorld.population.addAll(CritterWorld.babies);
 		CritterWorld.babies.clear();
+		
+		for(Critter c : CritterWorld.population) {
+			c.hasMoved = false;
+			c.inFight = false;
+		}
 		
 	}
 	
