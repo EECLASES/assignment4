@@ -51,10 +51,8 @@ public abstract class Critter {
 	private int energy = 0;
 	protected int getEnergy() { return energy; }
 	
-	//private int x_coord;
-	//private int y_coord;
-	public int x_coord;
-	public int y_coord;
+	private int x_coord;
+	private int y_coord;
 	
 	protected final void walk(int direction) {
 		if(!hasMoved) {
@@ -71,8 +69,7 @@ public abstract class Critter {
 			}
 		}
 	}
-	
-	//stage 2: reuse walk code
+
 	protected final void run(int direction) {
 		if(!hasMoved) {
 			move(true,direction);
@@ -88,8 +85,7 @@ public abstract class Critter {
 			}
 		}
 	}
-	
-	//helper method for walk/run methods
+
 	protected final void move(boolean type, int direction) {
 		
 		int magnitude = 1;
@@ -164,14 +160,12 @@ public abstract class Critter {
 			}
 			break;
 		default:
-			//invalid direction
 			System.out.println("invalid direction, must be 0-7");
 		}
 		
 		
 	}
-	
-	//stage 2: look at project description
+
 	protected final void reproduce(Critter offspring, int direction) {
 		if (this.getEnergy() > Params.min_reproduce_energy) {
 		CritterWorld.babies.add(offspring);
@@ -300,17 +294,13 @@ public abstract class Critter {
 	 * Clear the world of all critters, dead and alive
 	 */
 	public static void clearWorld() {
-		// Complete this method.
 		
 		CritterWorld.population.clear();
 		
 	}
 	
 	public static void worldTimeStep() {
-		// Complete this method.
-		
-		//System.out.println("doing worldtimestep");
-		
+				
 		for(Critter c : CritterWorld.population) {
 			c.doTimeStep();
 		}
@@ -330,19 +320,15 @@ public abstract class Critter {
 		for(int i=0;i<Params.refresh_algae_count;i++) {
 			Algae a = new Algae();
 			a.setEnergy(Params.start_energy);
-			a.setX_coord(getRandomInt(Params.world_width-1));
-			a.setY_coord(getRandomInt(Params.world_height-1));
+			a.setX_coord(getRandomInt(Params.world_width));
+			a.setY_coord(getRandomInt(Params.world_height));
 			CritterWorld.population.add(a);
 		}
 	}
 	
-	//write for stage2
+
 	protected static void doEncounters() {
-		//check for all critters in the same location.
-		//for every spot with more than one critter, call both of their fight methods.
-		//if both are still alive, look at project description for what to do.
-		
-		//find all critters that share a spot
+
 		HashMap<Critter,ArrayList<Critter>> same = new HashMap<Critter,ArrayList<Critter>>();
 		
 		for(Critter A : CritterWorld.population) {
@@ -372,9 +358,6 @@ public abstract class Critter {
 			}
 		}
 		
-		//for every encounter in "same", resolve in pairwise manner
-		//stage 2: assuming only 2 critters in same spot
-		
 		for(Critter c : CritterWorld.population) {
 			
 			int n = same.get(c).size();
@@ -388,9 +371,6 @@ public abstract class Critter {
 				current_winner = doFight(current_winner,same.get(c).get(i));
 			}
 			doFight(c,current_winner);
-//			if(same.get(c).size() == 1) {
-//				doFight(c,same.get(c).get(0));
-//			}
 		}
 		
 	}
@@ -471,7 +451,6 @@ public abstract class Critter {
 	}
 	
 	public static void displayWorld() {
-		// Complete this method.
 		
 		for(int i=0;i<Params.world_height+2;i++) {
 			
@@ -502,7 +481,6 @@ public abstract class Critter {
 					System.out.print("|");
 					continue;
 				} else {
-					//print critter if it exists at (x,y), ie (i+1,j+1) (due to borders)
 					boolean occupied = false;
 					for(Critter crit : CritterWorld.population) {
 						if(crit.x_coord == j-1 & crit.y_coord == i-1) {
@@ -522,7 +500,6 @@ public abstract class Critter {
 		}
 	}
 	
-	//protected method to set position of critter in makeCritter(final) method and addCritter(testing) method
 	protected void initializePosition(int x, int y) {
 		x_coord = x;
 		y_coord = y;
@@ -533,29 +510,31 @@ public abstract class Critter {
 	protected int getY() {
 		return this.y_coord;
 	}
-	
-	//protected method to set energy of critter in final and testing creation methods^^
+
 	protected void setEnergy(int e) {
 		energy = e;
 	}
 
-	//test mode only method to add critters to population and initialize them
 	public static void addCritter(String critter_name) {
-		// TODO Auto-generated method stub
+
 		if(critter_name.equals("Craig")) {
 			Craig c1 = new Craig();
 			CritterWorld.population.add(c1);
-			c1.initializePosition(getRandomInt(Params.world_width-1), getRandomInt(Params.world_height-1));
+			c1.initializePosition(getRandomInt(Params.world_width), getRandomInt(Params.world_height));
 			//c1.initializePosition(0, 0);
 			c1.setEnergy(Params.start_energy);
 		} else if(critter_name.equals("Algae")) {
 			Algae a1 = new Algae();
 			CritterWorld.population.add(a1);
 
-			//testing algae's testcritter methods
-			a1.setX_coord(getRandomInt(Params.world_width-1));
-			a1.setY_coord(getRandomInt(Params.world_height-1));
+			a1.setX_coord(getRandomInt(Params.world_width));
+			a1.setY_coord(getRandomInt(Params.world_height));
 			a1.setEnergy(Params.start_energy);
+		} else if(critter_name.equals("NumanCritter2")) {
+			NumanCritter2 n1 = new NumanCritter2();
+			CritterWorld.population.add(n1);
+			n1.initializePosition(getRandomInt(Params.world_width), getRandomInt(Params.world_height));
+			n1.setEnergy(Params.start_energy);
 		}
 		
 		

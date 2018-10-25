@@ -70,11 +70,14 @@ public class Main {
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
    
-        for(int i=0;i<100;i++) {
-        	Critter.addCritter("Craig");
-        }
-        for(int i=0;i<25;i++) {
-        	Critter.addCritter("Algae");
+//        for(int i=0;i<100;i++) {
+//        	Critter.addCritter("Craig");
+//        }
+//        for(int i=0;i<25;i++) {
+//        	Critter.addCritter("Algae");
+//        }
+        for(int i=0;i<3;i++) {
+        	Critter.addCritter("NumanCritter2");
         }
 
        
