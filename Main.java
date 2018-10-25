@@ -70,22 +70,47 @@ public class Main {
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
    
-//        for(int i=0;i<100;i++) {
-//        	Critter.addCritter("Craig");
-//        }
-//        for(int i=0;i<25;i++) {
-//        	Critter.addCritter("Algae");
-//        }
-        for(int i=0;i<3;i++) {
-        	Critter.addCritter("NumanCritter2");
+        for(int i=0;i<100;i++) {
+        	Critter.addCritter("Craig");
         }
-
+        for(int i=0;i<25;i++) {
+        	Critter.addCritter("Algae");
+        }
+//        Critter.addCritter("Algae");
+//        Critter.addCritter("NumanCritter2");
+//        Critter.addCritter("Craig");
        
         String command = kb.nextLine();
         
         while(!command.equals("quit")) {
         	
         	String[] command_components = command.split(" ");
+        	
+        	if(command_components[0].equals("make")) {
+        		if(command_components.length > 3) {
+        			System.out.println("error processing: " + command);
+        			command = kb.nextLine();
+        			continue;
+        		}
+        		//make command
+        	} else if(command_components[0].equals("stats")) {
+        		if(command_components.length > 2 || command_components.length == 1) {
+        			System.out.println("error processing: " + command);
+        			command = kb.nextLine();
+        			continue;
+        		}
+        		try {
+        			String qualified = myPackage + "." + command_components[1];
+        			Class critter_type = Class.forName(qualified);
+        			System.out.println(critter_type);
+        			command = kb.nextLine();
+        		} catch (Exception e) {
+        			System.out.println("error processing: " + command);
+        			command = kb.nextLine();
+        			
+        		}
+        		
+        	} else
         	
         	if(command_components[0].equals("show")) {
         		if(command_components.length > 1) {
@@ -142,8 +167,7 @@ public class Main {
         		continue;
         		
         	} else {
-        		//not a valid command
-        		System.out.println("error processing: " + command);
+        		System.out.println("invalid command: " + command);
         		command = kb.nextLine();
         		continue;
         	}

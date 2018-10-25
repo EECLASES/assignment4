@@ -67,6 +67,7 @@ public class NumanCritter2 extends Critter {
 		} else {
 			return false;
 		}
+
 		
 	}
 }
