@@ -2,9 +2,9 @@ package assignment4;
 /* CRITTERS Critter.java
  * EE422C Project 4 submission by
  * Replace <...> with your actual data.
- * <Student1 Name>
- * <Student1 EID>
- * <Student1 5-digit Unique No.>
+ * <Miguel Angel Garza Robledo>
+ * <Mag8238>
+ * <16345>
  * <Student2 Name>
  * <Student2 EID>
  * <Student2 5-digit Unique No.>
@@ -54,14 +54,6 @@ public abstract class Critter {
 	private int x_coord;
 	private int y_coord;
 	
-	/**
-	 * if the calling critter has not moved yet in this timestep,
-	 * it moves in the appropriate direction with the appropriate
-	 * magnitude. if the calling critter is in a fight when walk()
-	 * is called and the position it moved to is occupied, the 
-	 * calling critter is moved back to its initial position.
-	 * @param direction
-	 */
 	protected final void walk(int direction) {
 		if(!hasMoved) {
 			move(false,direction);
@@ -71,20 +63,13 @@ public abstract class Critter {
 		
 		if(inFight) {
 			for(Critter c : CritterWorld.population) {
-				if(x_coord == c.x_coord && y_coord == c.y_coord && c != this) {
+				if(x_coord == c.x_coord && y_coord == c.y_coord) {
 					move(false,(direction+4)%8);
 				}
 			}
 		}
 	}
 
-	/**if the calling critter has not moved yet in this timestep,
-	 * it moves in the appropriate direction with the appropriate
-	 * magnitude. if the calling critter is in a fight when run()
-	 * is called and the position it moved to is occupied, the 
-	 * calling critter is moved back to its initial position.
-	 * @param direction
-	 */
 	protected final void run(int direction) {
 		if(!hasMoved) {
 			move(true,direction);
@@ -101,10 +86,6 @@ public abstract class Critter {
 		}
 	}
 
-	/**helper reusable method for walk() and run().
-	 * @param type
-	 * @param direction
-	 */
 	protected final void move(boolean type, int direction) {
 		
 		int magnitude = 1;
@@ -185,13 +166,6 @@ public abstract class Critter {
 		
 	}
 
-	/**
-	 * adds the offspring to the population and initializes its position
-	 * only if the parent has the required energy. The energies of both 
-	 * critters are updated according to the requirements
-	 * @param offspring
-	 * @param direction
-	 */
 	protected final void reproduce(Critter offspring, int direction) {
 		if (this.getEnergy() > Params.min_reproduce_energy) {
 		CritterWorld.babies.add(offspring);
@@ -224,7 +198,28 @@ public abstract class Critter {
 		
 
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {		
-
+		String qualified = (myPackage + "." + critter_class_name);
+		
+		try {
+			Class critter_type = Class.forName(qualified);
+			Critter a = (Critter) critter_type.newInstance();
+			CritterWorld.population.add(a);
+			a.initializePosition(Critter.getRandomInt(Params.world_width), Critter.getRandomInt(Params.world_height));
+			a.setEnergy(Params.start_energy);
+			
+		}
+		catch(ClassNotFoundException e){
+			
+			throw new InvalidCritterException(qualified);
+			
+		}
+		catch(IllegalAccessException f) {
+			throw new InvalidCritterException(qualified);
+		}
+		catch(InstantiationException g) {
+			throw new InvalidCritterException(qualified);
+		}
+		
 	}
 
 	
@@ -237,10 +232,6 @@ public abstract class Critter {
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
 		List<Critter> result = new java.util.ArrayList<Critter>();
 	
-		String qualified_name = myPackage + "." + critter_class_name;
-		
-		System.out.println(qualified_name);
-		
 		return result;
 	}
 	
@@ -329,12 +320,6 @@ public abstract class Critter {
 		
 	}
 	
-	/**
-	 * method that is called when "step" command is invoked.
-	 * Does all critters' timesteps, resolves all encounters,
-	 * updates rest energy, generates algae, and updates the
-	 * population.
-	 */
 	public static void worldTimeStep() {
 				
 		for(Critter c : CritterWorld.population) {
@@ -351,10 +336,6 @@ public abstract class Critter {
 		
 	}
 	
-	/**
-	 * helper method to generate algae according to
-	 * Params.refresh_algae_count.
-	 */
 	protected static void generateAlgae() {
 		
 		for(int i=0;i<Params.refresh_algae_count;i++) {
@@ -367,10 +348,6 @@ public abstract class Critter {
 	}
 	
 
-	/**
-	 * method used to determine all positional conflicts and 
-	 * then resolve each fight in a pairwise manner.
-	 */
 	protected static void doEncounters() {
 
 		HashMap<Critter,ArrayList<Critter>> same = new HashMap<Critter,ArrayList<Critter>>();
@@ -419,13 +396,6 @@ public abstract class Critter {
 		
 	}
 	
-	/**helper method for doEncounter() that resolves each individual
-	 * fight between any two critters according to requirements. Returns
-	 * the critter that won that fight.
-	 * @param a
-	 * @param b
-	 * @return
-	 */
 	protected static Critter doFight(Critter a, Critter b) {
 		
 		a.inFight = true;
@@ -456,12 +426,6 @@ public abstract class Critter {
 			// dice roll
 			a_roll = getRandomInt(a.getEnergy());
 			b_roll = getRandomInt(b.getEnergy());
-		} else {
-			if(a.toString().equals("@")) {
-				a_roll = -1;
-			} else if(b.toString().equals("@")) {
-				b_roll = -1;
-			}
 		}
 		
 		if(a_roll >= b_roll) {
@@ -475,11 +439,6 @@ public abstract class Critter {
 		}
 	}
 	
-	/**
-	 * method used to remove all dead critters from the
-	 * population, add all baby critters to the population,
-	 * and reset all bookkeeping values for each critter.
-	 */
 	protected static void updatePopulation() {
 		
 		ArrayList<Critter> dead = new ArrayList<Critter>();
@@ -503,10 +462,6 @@ public abstract class Critter {
 		
 	}
 	
-	/**
-	 * method that subtracts Params.rest_energy_cost from
-	 * each Critter's energy.
-	 */
 	protected static void updateRestEnergy() {
 		
 		for(Critter c : CritterWorld.population) {
@@ -516,11 +471,6 @@ public abstract class Critter {
 		}
 	}
 	
-	/**
-	 * method that displays 2-D grid with all living
-	 * critters in it.
-	 * 
-	 */
 	public static void displayWorld() {
 		
 		for(int i=0;i<Params.world_height+2;i++) {
@@ -571,33 +521,17 @@ public abstract class Critter {
 		}
 	}
 	
-	/**helper method used to set the private
-	 * coordinate fields for any critter.
-	 * @param x
-	 * @param y
-	 */
 	protected void initializePosition(int x, int y) {
 		x_coord = x;
 		y_coord = y;
 	}
-	
-	/**getter method for a critter's x_coord field
-	 * @return
-	 */
 	protected int getX() {
 		return this.x_coord;
 	}
-	
-	/**getter method for a critter's y_coord field
-	 * @return
-	 */
 	protected int getY() {
 		return this.y_coord;
 	}
 
-	/**setter method for a critter's energy field
-	 * @param e
-	 */
 	protected void setEnergy(int e) {
 		energy = e;
 	}
@@ -608,7 +542,7 @@ public abstract class Critter {
 			Craig c1 = new Craig();
 			CritterWorld.population.add(c1);
 			c1.initializePosition(getRandomInt(Params.world_width), getRandomInt(Params.world_height));
-			//c1.initializePosition(0, 1);
+			//c1.initializePosition(0, 0);
 			c1.setEnergy(Params.start_energy);
 		} else if(critter_name.equals("Algae")) {
 			Algae a1 = new Algae();
@@ -616,13 +550,11 @@ public abstract class Critter {
 
 			a1.setX_coord(getRandomInt(Params.world_width));
 			a1.setY_coord(getRandomInt(Params.world_height));
-			//a1.initializePosition(0, 0);
 			a1.setEnergy(Params.start_energy);
 		} else if(critter_name.equals("NumanCritter2")) {
 			NumanCritter2 n1 = new NumanCritter2();
 			CritterWorld.population.add(n1);
 			n1.initializePosition(getRandomInt(Params.world_width), getRandomInt(Params.world_height));
-			//n1.initializePosition(0, 0);
 			n1.setEnergy(Params.start_energy);
 		}
 		
