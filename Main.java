@@ -70,15 +70,8 @@ public class Main {
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
    
-//        for(int i=0;i<100;i++) {
-//        	Critter.addCritter("Craig");
-//        }
-//        for(int i=0;i<25;i++) {
-//        	Critter.addCritter("Algae");
-//        }
-        for(int i=0;i<3;i++) {
-        	Critter.addCritter("NumanCritter2");
-        }
+       
+     
 
        
         String command = kb.nextLine();
@@ -93,6 +86,33 @@ public class Main {
         			command= kb.nextLine();
         			continue;
         		}
+        		String critter_name = "";
+        		int count = 1;
+        		if(command_components.length <= 3) {
+        			critter_name = command_components[1];
+        			if(command_components.length == 3) {
+        			try {
+            			count = Integer.parseInt(command_components[2]);
+            		} 
+        			catch (NumberFormatException e) {
+            				System.out.println("error processing: " + command);
+            				count = 0;		
+            		}
+        			}
+        			for(int i=0;i<count;i++) {
+        				try {
+        					Critter.makeCritter(critter_name);
+        				}
+            			catch(InvalidCritterException d){
+            				System.out.println("error processing: " + command );
+            				break;
+            				
+            			}
+            		}       		        		        		
+            		command = kb.nextLine();
+            		continue;
+        		}
+        		
         	}else if (command_components[0].equals("stats")) {
         		if(command_components.length > 2 || command_components.length == 1) {
         			System.out.println("error processing: " + command );
@@ -177,3 +197,4 @@ public class Main {
 
     }
 }
+

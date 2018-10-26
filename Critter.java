@@ -198,7 +198,28 @@ public abstract class Critter {
 		
 
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {		
-
+		String qualified = (myPackage + "." + critter_class_name);
+		
+		try {
+			Class critter_type = Class.forName(qualified);
+			Critter a = (Critter) critter_type.newInstance();
+			CritterWorld.population.add(a);
+			a.initializePosition(Critter.getRandomInt(Params.world_width), Critter.getRandomInt(Params.world_height));
+			a.setEnergy(Params.start_energy);
+			
+		}
+		catch(ClassNotFoundException e){
+			
+			throw new InvalidCritterException(qualified);
+			
+		}
+		catch(IllegalAccessException f) {
+			throw new InvalidCritterException(qualified);
+		}
+		catch(InstantiationException g) {
+			throw new InvalidCritterException(qualified);
+		}
+		
 	}
 
 	

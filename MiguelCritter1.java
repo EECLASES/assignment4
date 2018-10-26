@@ -3,13 +3,13 @@ package assignment4;
 public class MiguelCritter1 extends Critter {
 
 	boolean depressed;
-	int[] stress = new int[10];
-	int total;
+	int[] stress ;
+	int total = 0;
 	
 	
 	public MiguelCritter1() {
-		
-		for (int i = 1; i< 11; i++) {
+		stress = new int[10];
+		for (int i = 1; i< 10; i++) {
 			total = total + stress[i];
 		}
 		if (total > 50) {
