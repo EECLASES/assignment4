@@ -87,6 +87,29 @@ public class Main {
         	
         	String[] command_components = command.split(" ");
         	
+        	if(command_components[0].equals("make")) {
+        		if(command_components.length > 3 ) {
+        			System.out.println("error processing: " + command);
+        			command= kb.nextLine();
+        			continue;
+        		}
+        	}else if (command_components[0].equals("stats")) {
+        		if(command_components.length > 2 || command_components.length == 1) {
+        			System.out.println("error processing: " + command );
+        			command = kb.nextLine();
+        			continue;
+        		}
+        		try {
+        			String qualified = myPackage + "." + command_components[1];
+        			Class critter_type = Class.forName(qualified); 
+        			System.out.println(critter_type);
+        			command = kb.nextLine();
+        		}catch (Exception e) {
+        			System.out.println("error processing: " + command);
+        			command = kb.nextLine();
+        		}
+        	} else
+        	
         	if(command_components[0].equals("show")) {
         		if(command_components.length > 1) {
         			System.out.println("error processing: " + command);
