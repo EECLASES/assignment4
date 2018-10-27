@@ -124,6 +124,7 @@ public class Main {
         			continue;
         		}
         		try {
+<<<<<<< HEAD
         			String unqualified = command_components[1];
         			String qualified = myPackage + "." + unqualified;
         			Class critter_type = Class.forName(qualified);
@@ -144,6 +145,15 @@ public class Main {
         			System.out.println("error processing: " + command);
         			command = kb.nextLine();
         			continue;
+=======
+        			String qualified = myPackage + "." + command_components[1];
+        			Class critter_type = Class.forName(qualified); 
+        			System.out.println(critter_type);
+        			command = kb.nextLine();
+        		}catch (Exception e) {
+        			System.out.println("error processing: " + command);
+        			command = kb.nextLine();
+>>>>>>> 906ce7c0a279c050927b225a561dc143ffc81531
         		}
         	} else
         	
