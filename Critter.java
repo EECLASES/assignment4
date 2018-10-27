@@ -54,6 +54,12 @@ public abstract class Critter {
 	private int x_coord;
 	private int y_coord;
 	
+	/**method for critter to walk in given direction.
+	 * critter only walks if it hasn't moved already in this
+	 * time step and if it is moving to an unoccupied spot during
+	 * a fight. energy is subtracted regardless
+	 * @param direction
+	 */
 	protected final void walk(int direction) {
 		if(!hasMoved) {
 			move(false,direction);
@@ -70,6 +76,12 @@ public abstract class Critter {
 		}
 	}
 
+	/**method for critter to run in given direction.
+	 * critter only runs if it hasn't moved already in this
+	 * time step and if it is moving to an unoccupied spot during
+	 * a fight. energy is subtracted regardless
+	 * @param direction
+	 */
 	protected final void run(int direction) {
 		if(!hasMoved) {
 			move(true,direction);
@@ -86,6 +98,10 @@ public abstract class Critter {
 		}
 	}
 
+	/**helper method to reuse code for walk and run methods.
+	 * @param type
+	 * @param direction
+	 */
 	protected final void move(boolean type, int direction) {
 		
 		int magnitude = 1;
@@ -166,6 +182,12 @@ public abstract class Critter {
 		
 	}
 
+	/**reproduce method that takes an allocated Critter and a direction
+	 * and adds it to the population and initializes its fields if the parent
+	 * has the required amount of energy to reproduce
+	 * @param offspring
+	 * @param direction
+	 */
 	protected final void reproduce(Critter offspring, int direction) {
 		if (this.getEnergy() > Params.min_reproduce_energy) {
 		CritterWorld.babies.add(offspring);
@@ -334,6 +356,9 @@ public abstract class Critter {
 		
 	}
 	
+	/**
+	 * static method to perform a single worldtimestep
+	 */
 	public static void worldTimeStep() {
 				
 		for(Critter c : CritterWorld.population) {
@@ -350,6 +375,10 @@ public abstract class Critter {
 		
 	}
 	
+	/**
+	 * helper method for worldtimestep to generate the 
+	 * appropriate amount of new algae per timestep
+	 */
 	protected static void generateAlgae() {
 		
 		for(int i=0;i<Params.refresh_algae_count;i++) {
@@ -362,6 +391,11 @@ public abstract class Critter {
 	}
 	
 
+	/**
+	 * helper method for worldtimestep to handle all encounters.
+	 * uses a hashmap to keep track of all critters occupying the same spot
+	 * and resolves fights for each conflict in a pairwise manner.
+	 */
 	protected static void doEncounters() {
 
 		HashMap<Critter,ArrayList<Critter>> same = new HashMap<Critter,ArrayList<Critter>>();
@@ -410,6 +444,12 @@ public abstract class Critter {
 		
 	}
 	
+	/**handles a single pairwise fight between two critters according
+	 * to project specifications. 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	protected static Critter doFight(Critter a, Critter b) {
 		
 		a.inFight = true;
@@ -453,6 +493,10 @@ public abstract class Critter {
 		}
 	}
 	
+	/**helper method for worldtimestep to remove all dead critters
+	 * and add all baby critters to the population
+	 * 
+	 */
 	protected static void updatePopulation() {
 		
 		ArrayList<Critter> dead = new ArrayList<Critter>();
@@ -476,6 +520,10 @@ public abstract class Critter {
 		
 	}
 	
+	/**
+	 * helper method for worldtimestep to subtract the 
+	 * appropriate energy from each critter in the population
+	 */
 	protected static void updateRestEnergy() {
 		
 		for(Critter c : CritterWorld.population) {
@@ -485,6 +533,10 @@ public abstract class Critter {
 		}
 	}
 	
+	/**method invoked during "show" command to display 2-D grid representing
+	 * the critter world
+	 * 
+	 */
 	public static void displayWorld() {
 		
 		for(int i=0;i<Params.world_height+2;i++) {
@@ -535,43 +587,32 @@ public abstract class Critter {
 		}
 	}
 	
+	/**method used to initialize private position fields of critter
+	 * @param x
+	 * @param y
+	 */
 	protected void initializePosition(int x, int y) {
 		x_coord = x;
 		y_coord = y;
 	}
+	/**method used to get private x_coord field of critter
+	 * @return
+	 */
 	protected int getX() {
 		return this.x_coord;
 	}
+	/**method used to get private y_coord field of critter
+	 * @return
+	 */
 	protected int getY() {
 		return this.y_coord;
 	}
 
+	/**method used to set private energy field of critter
+	 * @param e
+	 */
 	protected void setEnergy(int e) {
 		energy = e;
 	}
 
-	public static void addCritter(String critter_name) {
-
-		if(critter_name.equals("Craig")) {
-			Craig c1 = new Craig();
-			CritterWorld.population.add(c1);
-			c1.initializePosition(getRandomInt(Params.world_width), getRandomInt(Params.world_height));
-			//c1.initializePosition(0, 0);
-			c1.setEnergy(Params.start_energy);
-		} else if(critter_name.equals("Algae")) {
-			Algae a1 = new Algae();
-			CritterWorld.population.add(a1);
-
-			a1.setX_coord(getRandomInt(Params.world_width));
-			a1.setY_coord(getRandomInt(Params.world_height));
-			a1.setEnergy(Params.start_energy);
-		} else if(critter_name.equals("NumanCritter2")) {
-			NumanCritter2 n1 = new NumanCritter2();
-			CritterWorld.population.add(n1);
-			n1.initializePosition(getRandomInt(Params.world_width), getRandomInt(Params.world_height));
-			n1.setEnergy(Params.start_energy);
-		}
-		
-		
-	}
 }
