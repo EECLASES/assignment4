@@ -12,7 +12,11 @@ package assignment4;
  * Fall 2016
  */
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+
+
 import java.io.*;
 
 
@@ -120,13 +124,26 @@ public class Main {
         			continue;
         		}
         		try {
-        			String qualified = myPackage + "." + command_components[1];
-        			Class critter_type = Class.forName(qualified); 
-        			System.out.println(critter_type);
+        			String unqualified = command_components[1];
+        			String qualified = myPackage + "." + unqualified;
+        			Class critter_type = Class.forName(qualified);
+        			List<Critter> instances = Critter.getInstances(unqualified); 
+        			java.lang.reflect.Method m = critter_type.getMethod("runStats", List.class);
+        			m.invoke(null, instances);
         			command = kb.nextLine();
-        		}catch (Exception e) {
+        			continue;
+        		}catch (InvalidCritterException e) {
         			System.out.println("error processing: " + command);
         			command = kb.nextLine();
+        			continue;
+        		}catch (ClassNotFoundException c) {
+        			System.out.println("error processing: " + command);
+        			command = kb.nextLine();
+        			continue;
+        		} catch(Exception f) {
+        			System.out.println("error processing: " + command);
+        			command = kb.nextLine();
+        			continue;
         		}
         	} else
         	
