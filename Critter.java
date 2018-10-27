@@ -54,7 +54,8 @@ public abstract class Critter {
 	private int x_coord;
 	private int y_coord;
 	
-	/**method for critter to walk in given direction.
+	/**
+	 * method for critter to walk in given direction.
 	 * critter only walks if it hasn't moved already in this
 	 * time step and if it is moving to an unoccupied spot during
 	 * a fight. energy is subtracted regardless
@@ -76,7 +77,8 @@ public abstract class Critter {
 		}
 	}
 
-	/**method for critter to run in given direction.
+	/**
+	 * method for critter to run in given direction.
 	 * critter only runs if it hasn't moved already in this
 	 * time step and if it is moving to an unoccupied spot during
 	 * a fight. energy is subtracted regardless
@@ -98,7 +100,8 @@ public abstract class Critter {
 		}
 	}
 
-	/**helper method to reuse code for walk and run methods.
+	/**
+	 * helper method to reuse code for walk and run methods.
 	 * @param type
 	 * @param direction
 	 */
@@ -182,7 +185,8 @@ public abstract class Critter {
 		
 	}
 
-	/**reproduce method that takes an allocated Critter and a direction
+	/**
+	 * reproduce method that takes an allocated Critter and a direction
 	 * and adds it to the population and initializes its fields if the parent
 	 * has the required amount of energy to reproduce
 	 * @param offspring
@@ -444,7 +448,8 @@ public abstract class Critter {
 		
 	}
 	
-	/**handles a single pairwise fight between two critters according
+	/**
+	 * handles a single pairwise fight between two critters according
 	 * to project specifications. 
 	 * @param a
 	 * @param b
@@ -478,8 +483,20 @@ public abstract class Critter {
 			
 		} else if(a_status == true && b_status == true) {
 			// dice roll
-			a_roll = getRandomInt(a.getEnergy());
-			b_roll = getRandomInt(b.getEnergy());
+			if(a.getEnergy() <= 0 && b.getEnergy() <= 0) {
+				a_roll = 0;
+				b_roll = 0;
+			} else if(a.getEnergy() <= 0) {
+				a_roll = 0;
+				b_roll = getRandomInt(b.getEnergy());
+			} else if(b.getEnergy() <= 0) {
+				a_roll = getRandomInt(a.getEnergy());
+				b_roll = 0;
+			} else {
+				a_roll = getRandomInt(a.getEnergy());
+				b_roll = getRandomInt(b.getEnergy());
+			}
+			
 		}
 		
 		if(a_roll >= b_roll) {
@@ -493,7 +510,8 @@ public abstract class Critter {
 		}
 	}
 	
-	/**helper method for worldtimestep to remove all dead critters
+	/**
+	 * helper method for worldtimestep to remove all dead critters
 	 * and add all baby critters to the population
 	 * 
 	 */
@@ -533,7 +551,8 @@ public abstract class Critter {
 		}
 	}
 	
-	/**method invoked during "show" command to display 2-D grid representing
+	/**
+	 * method invoked during "show" command to display 2-D grid representing
 	 * the critter world
 	 * 
 	 */
@@ -587,7 +606,8 @@ public abstract class Critter {
 		}
 	}
 	
-	/**method used to initialize private position fields of critter
+	/**
+	 * method used to initialize private position fields of critter
 	 * @param x
 	 * @param y
 	 */
@@ -595,20 +615,23 @@ public abstract class Critter {
 		x_coord = x;
 		y_coord = y;
 	}
-	/**method used to get private x_coord field of critter
+	/**
+	 * method used to get private x_coord field of critter
 	 * @return
 	 */
 	protected int getX() {
 		return this.x_coord;
 	}
-	/**method used to get private y_coord field of critter
+	/**
+	 * method used to get private y_coord field of critter
 	 * @return
 	 */
 	protected int getY() {
 		return this.y_coord;
 	}
 
-	/**method used to set private energy field of critter
+	/**
+	 * method used to set private energy field of critter
 	 * @param e
 	 */
 	protected void setEnergy(int e) {
